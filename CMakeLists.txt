@@ -7,7 +7,7 @@ set(CMAKE_EXE_LINKER_FLAGS " -static")
 
 # add_compile_definitions(BUILD_DEBUG)
 
-# add_library(<name>)
-# add_executable(<name>)
+# add_library(${PROJECT_NAME})
+# add_executable(${PROJECT_NAME})
 
-target_link_libraries(<name> -static-libgcc -static-libstdc++)
+target_link_libraries(${PROJECT_NAME} -static-libgcc -static-libstdc++)

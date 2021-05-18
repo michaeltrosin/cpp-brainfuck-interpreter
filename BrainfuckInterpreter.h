@@ -1,25 +1,31 @@
 //
-// Created by Michael on 11.05.2021.
+// Created by Michael on 13.05.2021.
 //
 
 #pragma once
 
+#include <sstream>
 #include <string>
 
 class BrainfuckInterpreter {
 public:
-    explicit BrainfuckInterpreter(std::string  source);
+    explicit BrainfuckInterpreter(std::string src);
     ~BrainfuckInterpreter();
 
     void run();
+
 private:
+    void dump(size_t index);
+
+    std::stringstream output_;
+
+    int bracket_count_ = 0;
+    int *brackets_;
+
+    int *cells_;
+    int *first_cell_;
+    int *last_cell_;
+
+    std::string src_;
     void print_current_cell();
-
-    std::string source_;
-
-    int* brackets_;
-    int bracket_indention_ = 0;
-
-    int cell_ptr_ = 0;
-    char *cells_;
 };

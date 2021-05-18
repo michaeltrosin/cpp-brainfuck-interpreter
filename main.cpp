@@ -10,11 +10,7 @@
 #include <string>
 
 int main(int argc, char **argv) {
-    if (argc == 1) {
-        std::cout << "Missing file argument" << std::endl;
-        return 1;
-    }
-    std::ifstream t(argv[1]);
+    std::ifstream t("../examples/test.bf");
     std::string str;
 
     t.seekg(0, std::ios::end);

@@ -1,56 +1,98 @@
 //
-// Created by Michael on 11.05.2021.
+// Created by Michael on 13.05.2021.
 //
 
 #include "BrainfuckInterpreter.h"
 
-#include <cstdio>
+#include <iostream>
 #include <utility>
 
-#define THRESHOLD 30000
+#define print(str) std::cout << str << "\n"
 
-BrainfuckInterpreter::BrainfuckInterpreter(std::string source) : source_(std::move(source)) {
-    cells_ = new char[THRESHOLD]{0};
-    brackets_ = new int[THRESHOLD]{-1};
+#define THRESHOLD 30000
+#define SIZE      255
+
+BrainfuckInterpreter::BrainfuckInterpreter(std::string src) : src_(std::move(src)) {
+    cells_ = new int[THRESHOLD]{0};
+    first_cell_ = cells_;
+    last_cell_ = (cells_ + THRESHOLD);
+
+    brackets_ = new int[THRESHOLD]{0};
 }
 
 BrainfuckInterpreter::~BrainfuckInterpreter() {
     delete[] cells_;
     delete[] brackets_;
+
+    //std::cout << "Output: "
+    //          << "\n"
+    //          << output_.str() << std::endl;
 }
 
 void BrainfuckInterpreter::run() {
-    for (int i = 0; i < source_.length(); i++) {
-        char c = source_[i];
-
-        switch (c) {
-            case '+': cells_[cell_ptr_]++; break;
-            case '-': cells_[cell_ptr_]--; break;
+    for (size_t i = 0; i < src_.length(); i++) {
+        //
+        char current = src_[i];
+        switch (current) {
+            case '+':
+                (*cells_)++;
+                if (*cells_ > SIZE) *cells_ = 0;
+                break;
+            case '-':
+                (*cells_)--;
+                if (*cells_ < 0) *cells_ = SIZE;
+                break;
+            case '.': print_current_cell(); break;
             case '>':
-                cell_ptr_++;
-                if (cell_ptr_ > THRESHOLD) cell_ptr_ = THRESHOLD;
+                cells_++;
+                if (cells_ > last_cell_) cells_ = first_cell_;
                 break;
             case '<':
-                cell_ptr_--;
-                if (cell_ptr_ < 0) cell_ptr_ = 0;
+                cells_--;
+                if (cells_ < first_cell_) cells_ = last_cell_;
                 break;
-            case '[': {
-                bracket_indention_++;
-                brackets_[cell_ptr_] = i;
-                break;
-            }
-            case ']':
-                if (cells_[cell_ptr_] == 0) {
-                    bracket_indention_--;
-                    break;
-                } else {
-                    i = brackets_[cell_ptr_];
+            case '[':
+                //
+                if ((*cells_) == 0) {
+                    int diff = 1;
+                    i++;
+
+                    while (diff != 0) {
+                        current = src_[i];
+                        i++;
+
+                        if (current == '[') {
+                            diff++;
+                        } else if (current == ']') {
+                            diff--;
+                        }
+                    }
+                    i--;
                     break;
                 }
-            case '.': print_current_cell(); break;
+
+                bracket_count_++;
+                brackets_[bracket_count_] = (int) i;
+                break;
+            case ']':
+                if ((*cells_) == 0) {
+                    //
+                    bracket_count_--;
+                    break;
+                }
+                //print(i << " : " << src_[i] << " : " << *cells_);
+                i = brackets_[bracket_count_];
+                break;
             default: break;
         }
+        //        dump(i);
     }
+
+    //print(bracket_count_);
 }
 
-void BrainfuckInterpreter::print_current_cell() { std::printf("%c", cells_[cell_ptr_]); }
+void BrainfuckInterpreter::dump(size_t index) { std::cout << std::string(src_).replace(index, 1, {'(', src_[index], ')'}) << std::endl; }
+void BrainfuckInterpreter::print_current_cell() {
+    std::cout << (char) (*cells_);
+    //    output_ << (char) (*cells_);
+}

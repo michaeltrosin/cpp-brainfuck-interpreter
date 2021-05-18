@@ -8,6 +8,6 @@ set(CMAKE_EXE_LINKER_FLAGS " -static")
 # add_compile_definitions(BUILD_DEBUG)
 
 # add_library(${PROJECT_NAME})
-add_executable(${PROJECT_NAME} main.cpp BrainfuckInterpreter.cpp BrainfuckInterpreter.h BrainfuckInterpreter.cpp BrainfuckInterpreter.h)
+add_executable(${PROJECT_NAME} main.cpp BrainfuckInterpreter.cpp BrainfuckInterpreter.h)
 
 target_link_libraries(${PROJECT_NAME} -static-libgcc -static-libstdc++)
